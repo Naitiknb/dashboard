@@ -27,8 +27,12 @@ export default function CreateUser() {
       form={form}
       onSubmitAction={handleSubmit}
       error={null}
+      breadcrumbItems={[
+        { label: "Users", href: "/users" },
+        { label: "Create User" }, // last item = current page, no link
+      ]}
     >
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-4 gap-3">
         <FormInput name="name" label="Name" placeholder="Enter name" required />
 
         <FormInput
@@ -39,11 +43,11 @@ export default function CreateUser() {
           required
         />
 
-        <FormTextArea
-          name="description"
-          label="Description"
-          placeholder="Enter description"
-          className="col-span-2"
+        <FormInput
+          name="role"
+          label="Role"
+          placeholder="Enter Role"
+
         />
       </div>
     </DataForm>

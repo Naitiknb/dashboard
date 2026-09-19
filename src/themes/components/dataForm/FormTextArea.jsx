@@ -21,6 +21,7 @@ export default function FormTextArea({
       name={name}
       control={control}
       rules={{ required: required ? `${label} is required` : false }}
+      className=""
       render={({ field, fieldState }) => (
         <Field data-invalid={fieldState.invalid} className={className}>
           <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
@@ -31,6 +32,7 @@ export default function FormTextArea({
             disabled={disabled}
             rows={rows}
             aria-invalid={fieldState.invalid}
+            className="h-auto  rounded"
           />
           {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
         </Field>

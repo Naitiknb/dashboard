@@ -22,8 +22,9 @@ export default function FormInput({
       control={control}
       rules={{ required: required ? `${label} is required` : false }}
       render={({ field, fieldState }) => (
-        <Field data-invalid={fieldState.invalid} className={className}>
-          <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
+        <Field data-invalid={fieldState.invalid} className={`gap-1 ${className || ""}`} >
+
+          <FieldLabel htmlFor={field.name} >  {label}</FieldLabel>
           <Input
             {...field}
             id={field.name}
@@ -31,6 +32,7 @@ export default function FormInput({
             placeholder={placeholder}
             disabled={disabled}
             aria-invalid={fieldState.invalid}
+            className="rounded h-8"
           />
           {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
         </Field>

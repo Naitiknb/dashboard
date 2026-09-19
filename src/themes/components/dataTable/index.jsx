@@ -137,7 +137,7 @@ export default function DataTable({
   return (
     <div>
 
-      <div className="my-2 flex items-center justify-end gap-5">
+      <div className="my-2 flex items-center justify-end gap-5 ">
         <div className="relative w-full max-w-xs">
           <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -163,7 +163,7 @@ export default function DataTable({
         ) : null}
       </div>
 
-      <div className="flex   w-full flex-col overflow-hidden rounded border bg-card shadow">
+      <div className="flex    w-full flex-col overflow-hidden rounded border bg-card shadow">
         <div className="flex-1">
           <Table>
             <TableHeader className="bg-blue-50 ">
