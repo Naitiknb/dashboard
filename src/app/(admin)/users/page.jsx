@@ -1,5 +1,8 @@
-import User from "../../../themes/components/pages/users/List/index";
+import UserList from "@/themes/components/pages/users/List";
+import { getUsers } from "@/lib/db";
 
-export default function UserPage() {
-  return <User />;
+export const dynamic = "force-dynamic"; 
+
+export default async function Page() {
+  return <UserList users={await getUsers()} />;
 }

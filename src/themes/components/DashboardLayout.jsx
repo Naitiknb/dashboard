@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Sidebar from "./sidebar";
 import Header from "./header";
+import { Toaster } from "sonner";
 
 export default function DashboardLayout({ children }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -17,6 +18,7 @@ export default function DashboardLayout({ children }) {
           setIsSidebarOpen={setIsSidebarOpen}
         />
         <main className="">{children}</main>
+        <Toaster position="top-right" richColors closeButton />
       </div>
     </div>
   );

@@ -1,0 +1,20 @@
+[
+  {
+    "id": "su1",
+    "name": "su1",
+    "email": "su1@gmail.com",
+    "password": "1234",
+    "role": "admin",
+    "description": "Default super user",
+    "isStatic": true
+  },
+  {
+    "name": "NB",
+    "email": "naitikbohra50@gmail.com",
+    "password": "1234",
+    "role": "admin",
+    "description": "",
+    "id": "15070a4e-d80a-480a-96a0-e64310a17906",
+    "createdAt": "2026-09-20T16:09:03.117Z"
+  }
+]

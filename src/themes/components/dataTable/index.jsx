@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 
 import {
@@ -15,7 +15,6 @@ import {
 import { Button } from "../../../components/ui/button";
 import { Plus, Pencil, Trash2, Eye, Search } from "lucide-react";
 import { Input } from "../../../components/ui/input";
-
 
 export function ActionButton({
   icon: Icon,
@@ -72,7 +71,7 @@ export const DeleteAction = ({ onClick, disabled, ...rest }) => (
     label="Delete"
     onClick={onClick}
     disabled={disabled}
-    className="!text-destructive"
+    className="text-destructive!"
     {...rest}
   />
 );
@@ -89,36 +88,51 @@ export default function DataTable({
   renderActions,
   editHref,
   deleteUrl,
+  onDelete, 
   actionsBefore,
   actionsAfter,
 }) {
   const [rows, setRows] = useState(data);
   const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
   const [deletingId, setDeletingId] = useState(null);
 
   useEffect(() => {
     setRows(data);
   }, [data]);
 
-  const itemsPerPage = 5;
-  const totalPages = Math.max(1, Math.ceil(rows.length / itemsPerPage));
+  const itemsPerPage = 20;
+
+  // search across every visible column
+  const filteredRows = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return rows;
+    return rows.filter((row) =>
+      columns.some((c) =>
+        String(row[c.key] ?? "").toLowerCase().includes(q)
+      )
+    );
+  }, [rows, search, columns]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredRows.length / itemsPerPage));
   const safePage = Math.min(page, totalPages);
   const startIndex = (safePage - 1) * itemsPerPage;
-  const currentData = rows.slice(startIndex, startIndex + itemsPerPage);
+  const currentData = filteredRows.slice(startIndex, startIndex + itemsPerPage);
 
-  // Remove a row from the table (use this if your child page deletes by itself)
   const removeRow = (id) => {
     setRows((prev) => prev.filter((r) => r.id !== id));
   };
 
-  // Confirm -> call deleteUrl -> remove the row
   const deleteRow = async (row) => {
     if (!window.confirm("Are you sure you want to delete this item?")) return;
 
     try {
       setDeletingId(row.id);
 
-      if (deleteUrl) {
+      if (onDelete) {
+        const result = await onDelete(row);
+        if (result === false) return; // page refused, keep the row
+      } else if (deleteUrl) {
         const res = await fetch(`${deleteUrl}/${row.id}`, { method: "DELETE" });
         if (!res.ok) throw new Error("Delete failed");
       }
@@ -135,13 +149,19 @@ export default function DataTable({
   const actionHelpers = { deleteRow, removeRow, deletingId };
 
   return (
-    <div>
-
-      <div className="my-2 flex items-center justify-end gap-5 ">
+    // adjust 6rem to your header + page padding
+    <div className="flex h-[calc(100vh-3rem)] flex-col">
+      {/* Toolbar */}
+      <div className="my-2 flex shrink-0 items-center justify-end gap-5">
         <div className="relative w-full max-w-xs">
           <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             type="search"
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setPage(1);
+            }}
             placeholder="Search..."
             className="h-8 bg-card pl-8"
           />
@@ -163,10 +183,12 @@ export default function DataTable({
         ) : null}
       </div>
 
-      <div className="flex    w-full flex-col overflow-hidden rounded border bg-card shadow">
-        <div className="flex-1">
+      {/* Card */}
+      <div className="flex min-h-0 w-full flex-1 flex-col overflow-hidden rounded border bg-card shadow">
+        {/* Only this part scrolls */}
+        <div className="flex-1 overflow-auto">
           <Table>
-            <TableHeader className="bg-blue-50 ">
+            <TableHeader className="sticky top-0 z-10 bg-blue-50">
               <TableRow className="hover:bg-secondary">
                 {columns.map((column) => (
                   <TableHead
@@ -182,7 +204,6 @@ export default function DataTable({
               </TableRow>
             </TableHeader>
 
-            {/* Body: keep the border on every row, including the last one */}
             <TableBody className="[&_tr:last-child]:border-b">
               {currentData.length > 0 ? (
                 currentData.map((row, index) => (
@@ -199,15 +220,19 @@ export default function DataTable({
                     <TableCell className="p-1">
                       <div className="flex items-center justify-end">
                         {renderActions ? (
-                          // Child page decides which icons to show
                           renderActions(row, actionHelpers)
                         ) : (
-                          // Default: optional before/after + Edit + Delete
                           <>
                             {actionsBefore?.(row)}
 
                             {editHref ? (
-                              <EditAction href={`${editHref}/${row.id}`} />
+                              <EditAction
+                                href={
+                                  typeof editHref === "function"
+                                    ? editHref(row)
+                                    : `${editHref}/${row.id}`
+                                }
+                              />
                             ) : null}
 
                             <DeleteAction
@@ -228,7 +253,7 @@ export default function DataTable({
                     colSpan={columns.length + 1}
                     className="h-24 text-center text-muted-foreground"
                   >
-                    No data found
+                    {search ? `No results for "${search}"` : "No data found"}
                   </TableCell>
                 </TableRow>
               )}
@@ -236,13 +261,12 @@ export default function DataTable({
           </Table>
         </div>
 
-        {/* Pagination (stays at the bottom) */}
-        <div className="sticky bottom-0">
-          <div className="flex justify-between  items-center border-t bg-card p-2">
-
-
+        {/* Pagination pinned to the bottom */}
+        <div className="shrink-0 border-t bg-card">
+          <div className="flex items-center justify-between p-2">
             <p className="text-sm text-muted-foreground">
-              Page {safePage} of {totalPages}
+              Page {safePage} of {totalPages} · {filteredRows.length}{" "}
+              {filteredRows.length === 1 ? "record" : "records"}
             </p>
 
             <div className="flex gap-2">

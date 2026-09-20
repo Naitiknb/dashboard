@@ -24,7 +24,7 @@ export default function FormTextArea({
       className=""
       render={({ field, fieldState }) => (
         <Field data-invalid={fieldState.invalid} className={className}>
-          <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
+          <FieldLabel htmlFor={field.name} className={"text-xs"}>{label}</FieldLabel>
           <Textarea
             {...field}
             id={field.name}
@@ -32,7 +32,7 @@ export default function FormTextArea({
             disabled={disabled}
             rows={rows}
             aria-invalid={fieldState.invalid}
-            className="h-auto  rounded"
+            className="h-auto  rounded text-xs"
           />
           {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
         </Field>

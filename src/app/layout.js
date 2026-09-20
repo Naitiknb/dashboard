@@ -1,6 +1,6 @@
 import { Outfit } from "next/font/google";
 import "./globals.css";
-import DashboardLayout from "../themes/components/DashboardLayout";
+
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -18,9 +18,8 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={outfit.variable}>
       <body>
-        <DashboardLayout>
+    
           {children}
-        </DashboardLayout>
       </body>
     </html>
   );

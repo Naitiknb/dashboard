@@ -13,7 +13,7 @@ import { Button } from "../../../components/ui/button";
 import Link from "next/link";
 
 const items = [
-    { key: "dashboard", label: "Dashboard", icon: LayoutDashboard, href: "/" },
+    { key: "dashboard", label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
     { key: "well", label: "Wells", icon: Waves, href: "/wells" },
     { key: "task", label: "Tasks", icon: ClipboardList, href: "/tasks" },
     { key: "users", label: "Users", icon: Users, href: "/users" },
@@ -84,7 +84,15 @@ export default function Sidebar({ isOpen }) {
                             <p className="text-xs text-gray-400">Admin</p>
                         </div>
                     )}
+
+
                 </div>
+
+                <Button variant="default" size="sm" className={"w-55 m-2"} >
+                   <Link href={"/signin"}>
+                    Sign out
+                   </Link>
+                </Button>
             </div>
         </aside>
     );

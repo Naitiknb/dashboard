@@ -1,8 +1,10 @@
 "use client";
 
+import { Fragment } from "react"; // added
+import Link from "next/link"; // added
 import { useRouter } from "next/navigation";
 import { FormProvider } from "react-hook-form";
-import { Save, Undo2, AlertCircle } from "lucide-react";
+import { Save, Undo2, AlertCircle, Home, ChevronRight } from "lucide-react"; // Home, ChevronRight added
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -16,6 +18,7 @@ export default function DataForm({
   error = null,
   children,
   backPageLink,
+  breadcrumbItems = [], // added
   showSaveButton = true,
   showBackPageLink = true,
   extraButton,
@@ -47,7 +50,55 @@ export default function DataForm({
   return (
     <FormProvider {...form} className="bg-white p-3">
       <div className="flex items-center justify-between border-b bg-gray-50 p-3 rounded">
-        <h1 className="text-xl font-semibold">{title}</h1>
+        {/* title + breadcrumb (added wrapper) */}
+        <div className="mx-3 gap-4 gap-y-1">
+          <h1 className="text-sm font-semibold">{title}</h1>
+
+          {breadcrumbItems.length > 0 && (
+            <nav aria-label="Breadcrumb">
+              <ol className="flex flex-wrap items-center gap-1 text-xs text-gray-500">
+                <li>
+                  <Link
+                    href="/"
+                    aria-label="Home"
+                    className="flex items-center hover:text-gray-900"
+                  >
+                   Home
+                  </Link>
+                </li>
+
+                {breadcrumbItems.map((item, index) => {
+                  const isLast = index === breadcrumbItems.length - 1;
+
+                  return (
+                    <Fragment key={`${item.label}-${index}`}>
+                      <li aria-hidden="true">
+                        <ChevronRight className="h-3.5 w-3.5" />
+                      </li>
+                      <li>
+                        {isLast || !item.href ? (
+                          <span
+                            aria-current={isLast ? "page" : undefined}
+                            className="font-medium text-gray-900"
+                          >
+                            {item.label}
+                          </span>
+                        ) : (
+                          <Link
+                            href={item.href}
+                            className="hover:text-gray-900 hover:underline"
+                          >
+                            {item.label}
+                          </Link>
+                        )}
+                      </li>
+                    </Fragment>
+                  );
+                })}
+              </ol>
+            </nav>
+          )}
+        </div>
 
         <div className="flex items-center gap-2">
           {showSaveButton && (

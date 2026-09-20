@@ -1,38 +1,63 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
-import DataForm from "@/themes/components/dataForm";
+import DataForm from "@/themes/components/dataForm/index";
 import FormInput from "@/themes/components/dataForm/FormInput";
-import FormTextArea from "@/themes/components/dataForm/FormTextArea";
+import FormSelect from "@/themes/components/dataForm/FormSelect";
+import { handleFormSubmit } from "@/themes/lib/formSubmit";
 
-export default function CreateUser() {
+const ROLE_OPTIONS = [
+  { value: "admin", label: "Admin" },
+  { value: "manager", label: "Manager" },
+  { value: "analyst", label: "Analyst" },
+  { value: "viewer", label: "Viewer" },
+];
+
+export default function UserForm({ user }) {
+  const router = useRouter();
+  const isEdit = Boolean(user);
+  const [error, setError] = useState(null);
+
   const form = useForm({
     defaultValues: {
-      name: "",
-      email: "",
-      description: "",
+      name: user?.name ?? "",
+      email: user?.email ?? "",
+      password: "",
+      role: user?.role ?? "viewer",
     },
   });
 
-  async function handleSubmit(data) {
-    console.log(data);
-  }
+  const onSubmit = (values) =>
+    handleFormSubmit(values, {
+      endpoint: "users",
+      id: user?.id, 
+      omitEmpty: isEdit ? ["password"] : [], 
+      setError: form.setError,
+      setErrorState: setError,
+      router,
+      successRedirect: "/users",
+      successMessage: isEdit
+        ? "User updated successfully."
+        : "User created successfully.",
+    });
 
   return (
     <DataForm
-      title="Create User"
-      data={{ id: 0 }}
-      requiredFields={["name", "email"]}
+      title={isEdit ? "Edit User" : "Create User"}
+      data={{ id: user?.id ?? 0 }}
       form={form}
-      onSubmitAction={handleSubmit}
-      error={null}
+      onSubmitAction={onSubmit}
+      error={error}
+      backPageLink="/users"
       breadcrumbItems={[
         { label: "Users", href: "/users" },
-        { label: "Create User" }, // last item = current page, no link
+        { label: isEdit ? "Edit User" : "Create User" },
       ]}
     >
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 gap-3">
         <FormInput name="name" label="Name" placeholder="Enter name" required />
 
         <FormInput
@@ -44,11 +69,14 @@ export default function CreateUser() {
         />
 
         <FormInput
-          name="role"
-          label="Role"
-          placeholder="Enter Role"
-
+          name="password"
+          label="Password"
+          type="password"
+          placeholder={isEdit ? "Leave blank to keep current" : "Enter password"}
+          required={!isEdit}
         />
+
+        <FormSelect name="role" label="Role" required options={ROLE_OPTIONS} />
       </div>
     </DataForm>
   );

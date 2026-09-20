@@ -1,5 +1,5 @@
-import Form from "@/themes/components/pages/users/Form";
+import UserForm from "@/themes/components/pages/users/Form";
 
 export default function Page() {
-  return <Form />;
+  return <UserForm />;
 }
