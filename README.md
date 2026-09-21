@@ -20,7 +20,7 @@ The dashboard provides production analytics, well management, task management, u
 ### 1. Clone the project
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/Naitiknb/dashboard.git
 cd dashboard
 ```
 
