@@ -1,36 +1,96 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Well Production Monitoring Dashboard
+
+A responsive oil & gas **Well Production Monitoring Dashboard** built with Next.js, Tailwind CSS, shadcn/ui, ECharts, Highcharts, and AG Grid.
+
+The dashboard provides production analytics, well management, task management, user management, roles, permissions, authentication, and RBAC.
+
+## Tech Stack
+
+* Next.js
+* JavaScript
+* Tailwind CSS
+* shadcn/ui
+* ECharts
+* Highcharts
+* AG Grid
+* Docker
 
 ## Getting Started
 
-First, run the development server:
+### 1. Clone the project
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd dashboard
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Start with Docker
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```bash
+docker compose up --build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The application will be available at:
 
-## Learn More
+```text
+http://localhost:5000
+```
 
-To learn more about Next.js, take a look at the following resources:
+### 3. Development
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The project runs Next.js in development mode inside Docker.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Source code is mounted into the container, so changes are reflected automatically.
 
-## Deploy on Vercel
+## Default Login
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```text
+Email: su1@gmail.com
+Password: 1234
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The user is assigned the `Admin` role through `roleId`, and permissions are controlled through the RBAC system.
+
+## Project Structure
+
+```text
+src/
+├── app/              # Pages and API routes
+├── themes/           # UI components
+├── context/          # RBAC context
+├── lib/              # Business logic and data access
+└── data/              # JSON data storage
+
+Dockerfile
+docker-compose.yml
+```
+
+## Data Storage
+
+For this take-home project, CRUD data is stored in JSON files under:
+
+```text
+data/
+```
+
+This keeps the project simple and avoids requiring a database setup.
+
+## Docker Configuration
+
+The application runs on port `5000`.
+
+```yaml
+services:
+  dashboard:
+    build: .
+    container_name: dashboard
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+```
+
+## Notes
+
+This project is intended as a frontend-focused demonstration. JSON file storage is used for demo persistence and is not intended as production database storage.

@@ -34,7 +34,7 @@ export async function getRolesById(id) {
     );
 }
 
-export async function createRole(data) {
+export async function createRole(data) {    
     const roles = await read();
 
     const name = data.name?.trim();

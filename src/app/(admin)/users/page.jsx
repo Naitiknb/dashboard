@@ -1,5 +1,5 @@
 import UserList from "@/themes/components/pages/users/List";
-import { getUsers } from "@/lib/db";
+import { getUsers } from "@/lib/users";
 
 export const dynamic = "force-dynamic"; 
 

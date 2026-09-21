@@ -1,5 +1,7 @@
 import { promises as fs } from "fs";
 import path from "path";
+import { getWells } from "./wells";
+import { getUsers } from "./users";
 
 const FILE = path.join(process.cwd(), "data", "tasks.json");
 
@@ -21,7 +23,41 @@ async function write(data) {
 }
 
 export async function getTasks() {
-  return await read();
+  const [tasks, wells, users] = await Promise.all([
+    read(),
+    getWells(),
+    getUsers(),
+  ]);
+
+  const wellNameById = new Map(
+    wells.map((well) => [
+      String(well.id),
+      well.wellName,
+    ])
+  );
+
+  const userNameById = new Map(
+    users.map((user) => [
+      String(user.id),
+      user.name,
+    ])
+  );
+
+  return tasks.map((task) => {
+    return {
+      ...task,
+
+      wellName:
+        wellNameById.get(
+          String(task.wellId)
+        ) ?? "-",
+
+      assignedToName:
+        userNameById.get(
+          String(task.assignedTo)
+        ) ?? "-",
+    };
+  });
 }
 
 export async function getTasksById(id) {

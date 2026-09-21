@@ -3,6 +3,7 @@
 import DataTable from "../../../dataTable";
 
 const columns = [
+  { key: "id", label: "id" },
   { key: "name", label: "Name" },
   { key: "email", label: "Email" },
   { key: "role", label: "Role" },

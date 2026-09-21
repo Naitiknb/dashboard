@@ -1,21 +1,11 @@
 [
   {
-    "id": "su1",
+    "id": "1",
     "name": "su1",
     "email": "su1@gmail.com",
     "password": "1234",
-    "role": "admin",
-    "description": "Default super user",
-    "isStatic": true
-  },
-  {
-    "name": "NB",
-    "email": "naitikbohra50@gmail.com",
-    "password": "1234",
-    "role": "admin",
-    "id": "2",
-    "createdAt": "2026-09-21T10:30:32.606Z",
-    "roleId": 1
+    "roleId": "1",
+    "description": "Default admin user"
   },
   {
     "name": "Suyash",
@@ -24,5 +14,13 @@
     "roleId": 2,
     "id": "3",
     "createdAt": "2026-09-21T13:32:31.581Z"
+  },
+  {
+    "name": "NB",
+    "email": "nb@gmail.com",
+    "password": "1234",
+    "roleId": 1,
+    "id": "4",
+    "createdAt": "2026-09-21T14:47:13.486Z"
   }
 ]

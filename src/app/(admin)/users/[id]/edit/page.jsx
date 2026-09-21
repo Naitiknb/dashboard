@@ -1,6 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 import UserForm from "@/themes/components/pages/users/Form";
-import { getUserById } from "@/lib/db";
+import { getUserById } from "@/lib/users";
 
 export const dynamic = "force-dynamic";
 

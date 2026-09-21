@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getUserById, updateUser, deleteUser } from "@/lib/db";
+import { getUserById, updateUser, deleteUser } from "@/lib/users";
 
 export async function GET(_req, { params }) {
   const { id } = await params;

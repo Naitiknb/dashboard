@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 
-import { getUsers, authenticateUser as verifyCredentials } from "@/lib/db";
+import { getUsers, authenticateUser as verifyCredentials } from "@/lib/users";
 import { getRolesById } from "@/lib/roles";
 
 const AUTH_COOKIE = "auth_user_id";

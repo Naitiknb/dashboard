@@ -1,5 +1,6 @@
 import { promises as fs } from "fs";
 import path from "path";
+import { getRoles } from "@/lib/roles";
 
 const FILE = path.join(process.cwd(), "data", "users.json");
 
@@ -8,9 +9,8 @@ const SUPER_USER = {
   name: "su1",
   email: "su1@gmail.com",
   password: "1234",
-  role: "admin",
-  description: "Default super user",
-  isStatic: true,
+  roleId: "1",
+  description: "Default admin user",
 };
 
 async function read() {
@@ -29,7 +29,26 @@ async function write(data) {
 const safe = ({ password, ...rest }) => rest;
 
 export async function getUsers() {
-  return (await read()).map(safe);
+  const [users, roles] = await Promise.all([
+    read(),
+    getRoles(),
+  ]);
+
+  const nameById = new Map(
+    roles.map((role) => [
+      String(role.id),
+      role.name,
+    ])
+  );
+
+  return users.map((user) => {
+    const { password, ...rest } = user;
+
+    return {
+      ...rest,
+      role: nameById.get(String(user.roleId)) ?? "-",
+    };
+  });
 }
 
 export async function getUserById(id) {
