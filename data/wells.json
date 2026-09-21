@@ -1,0 +1,20 @@
+[
+  {
+    "wellName": "Well1",
+    "fieldName": "Alpha 1",
+    "status": "active",
+    "productionTarget": "2",
+    "description": "working",
+    "id": "cd59496b-c51b-431d-998c-39f01ce17779",
+    "createdAt": "2026-09-21T08:44:00.935Z"
+  },
+  {
+    "wellName": "Well2",
+    "fieldName": "Alpha 2",
+    "status": "active",
+    "productionTarget": "4",
+    "description": "working",
+    "id": "492ef8b0-08f0-4bb0-af58-bdfcf5cd0837",
+    "createdAt": "2026-09-21T08:45:26.924Z"
+  }
+]

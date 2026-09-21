@@ -26,7 +26,7 @@ async function write(data) {
   await fs.writeFile(FILE, JSON.stringify(data, null, 2));
 }
 
-const safe = ({ password, ...rest }) => rest; // never send passwords to the browser
+const safe = ({ password, ...rest }) => rest; 
 
 export async function getUsers() {
   return (await read()).map(safe);
