@@ -16,6 +16,19 @@ import { Button } from "../../../components/ui/button";
 import { Plus, Pencil, Trash2, Eye, Search } from "lucide-react";
 import { Input } from "../../../components/ui/input";
 import { useRBAC } from "@/context/RBACContext";
+import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+
+
 
 export function ActionButton({
   icon: Icon,
@@ -67,6 +80,8 @@ export const ViewAction = ({ href, onClick, ...rest }) => (
 );
 
 export const DeleteAction = ({ onClick, disabled, ...rest }) => (
+
+
   <ActionButton
     icon={Trash2}
     label="Delete"
@@ -118,6 +133,7 @@ export default function DataTable({
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [deletingId, setDeletingId] = useState(null);
+  const [rowToDelete, setRowToDelete] = useState(null);
 
   useEffect(() => {
     setRows(data);
@@ -144,9 +160,16 @@ export default function DataTable({
     setRows((prev) => prev.filter((r) => r.id !== id));
   };
 
-  const deleteRow = async (row) => {
+
+  const deleteRow = (row) => {
     if (!canDelete) return;
-    if (!window.confirm("Are you sure you want to delete this item?")) return;
+    setRowToDelete(row);
+  };
+
+
+  const confirmDelete = async () => {
+    const row = rowToDelete;
+    if (!row || !canDelete) return;
 
     try {
       setDeletingId(row.id);
@@ -160,15 +183,17 @@ export default function DataTable({
       }
 
       removeRow(row.id);
+      toast.success("Deleted successfully.");
     } catch (error) {
       console.error(error);
-      alert("Could not delete. Please try again.");
+      toast.error("Could not delete. Please try again.");
     } finally {
       setDeletingId(null);
+      setRowToDelete(null);
     }
   };
 
-  // custom renderActions can use canEdit / canView / canDelete too
+
   const actionHelpers = {
     deleteRow,
     removeRow,
@@ -335,6 +360,40 @@ export default function DataTable({
           </div>
         </div>
       </div>
+
+
+      <AlertDialog
+        open={rowToDelete !== null}
+        onOpenChange={(open) => {
+          if (!open && deletingId === null) setRowToDelete(null);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete this item?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. The item will be permanently removed.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deletingId !== null}>
+              Cancel
+            </AlertDialogCancel>
+
+            <AlertDialogAction
+              disabled={deletingId !== null}
+              onClick={(e) => {
+                e.preventDefault();
+                confirmDelete();
+              }}
+              className="bg-destructive text-white hover:bg-destructive/90"
+            >
+              {deletingId !== null ? "Deleting..." : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

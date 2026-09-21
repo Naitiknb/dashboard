@@ -5,127 +5,74 @@ import { Checkbox } from "@/components/ui/checkbox";
 const PERMISSION_GROUPS = [
     {
         title: "Dashboard",
-        permissions: [
-            {
-                value: "dashboard.view",
-                label: "View Dashboard",
-            },
+        resources: [
+            { key: "dashboard", label: "Dashboard", permissions: { view: "dashboard.view" } },
+            { key: "productionKpi", label: "Production", permissions: { view: "dashboard.productionKpi" } },
+            { key: "targetKpi", label: "Production Target", permissions: { view: "dashboard.targetKpi" } },
+            { key: "targetAchieved", label: "Target Achieved", permissions: { view: "dashboard.targetAchieved" } },
+            { key: "activeWells", label: "Active Wells", permissions: { view: "dashboard.activeWells" } },
+            { key: "averageCycleTime", label: "Average Cycle Time", permissions: { view: "dashboard.averageCycleTime" } },
+            { key: "productionTrend", label: "Production Trend", permissions: { view: "dashboard.productionTrend" } },
+            { key: "fieldPerformance", label: "Field Performance", permissions: { view: "dashboard.fieldPerformance" } },
+            { key: "rankings", label: "Rankings", permissions: { view: "dashboard.rankings" } },
+            { key: "productionGrid", label: "Production Grid", permissions: { view: "dashboard.productionGrid" } },
         ],
     },
+
     {
-        title: "Dashboard Widgets",
-        permissions: [
+        title: "Management",
+        resources: [
             {
-                value: "dashboard.widgets.production",
-                label: "Production",
+                key: "wells",
+                label: "Wells",
+                permissions: {
+                    view: "wells.view",
+                    create: "wells.create",
+                    edit: "wells.edit",
+                    delete: "wells.delete",
+                },
             },
             {
-                value: "dashboard.widgets.target",
-                label: "Production Target",
+                key: "tasks",
+                label: "Tasks",
+                permissions: {
+                    view: "tasks.view",
+                    create: "tasks.create",
+                    edit: "tasks.edit",
+                    delete: "tasks.delete",
+                },
             },
             {
-                value: "dashboard.widgets.performance",
-                label: "Performance",
+                key: "users",
+                label: "Users",
+                permissions: {
+                    view: "users.view",
+                    create: "users.create",
+                    edit: "users.edit",
+                    delete: "users.delete",
+                },
             },
             {
-                value: "dashboard.widgets.topWells",
-                label: "Top Wells",
-            },
-            {
-                value: "dashboard.widgets.underPerforming",
-                label: "Under Performing",
-            },
-            {
-                value: "dashboard.widgets.fieldPerformance",
-                label: "Field Performance",
-            },
-        ],
-    },
-    {
-        title: "Wells",
-        permissions: [
-            {
-                value: "wells.view",
-                label: "View",
-            },
-            {
-                value: "wells.create",
-                label: "Create",
-            },
-            {
-                value: "wells.edit",
-                label: "Edit",
-            },
-            {
-                value: "wells.delete",
-                label: "Delete",
-            },
-        ],
-    },
-    {
-        title: "Tasks",
-        permissions: [
-            {
-                value: "tasks.view",
-                label: "View",
-            },
-            {
-                value: "tasks.create",
-                label: "Create",
-            },
-            {
-                value: "tasks.edit",
-                label: "Edit",
-            },
-            {
-                value: "tasks.delete",
-                label: "Delete",
-            },
-        ],
-    },
-    {
-        title: "Users",
-        permissions: [
-            {
-                value: "users.view",
-                label: "View",
-            },
-            {
-                value: "users.create",
-                label: "Create",
-            },
-            {
-                value: "users.edit",
-                label: "Edit",
-            },
-            {
-                value: "users.delete",
-                label: "Delete",
-            },
-        ],
-    },
-    {
-        title: "Roles",
-        permissions: [
-            {
-                value: "roles.view",
-                label: "View",
-            },
-            {
-                value: "roles.create",
-                label: "Create",
-            },
-            {
-                value: "roles.edit",
-                label: "Edit",
-            },
-            {
-                value: "roles.delete",
-                label: "Delete",
+                key: "roles",
+                label: "Roles",
+                permissions: {
+                    view: "roles.view",
+                    create: "roles.create",
+                    edit: "roles.edit",
+                    delete: "roles.delete",
+                },
             },
         ],
     },
 ];
+
+const ALL_ACTIONS = ["view", "create", "edit", "delete"];
+
+
+const getGroupActions = (group) =>
+    ALL_ACTIONS.filter((action) =>
+        group.resources.some((resource) => resource.permissions[action])
+    );
 
 export default function PermissionCheckboxes({
     value = [],
@@ -133,44 +80,86 @@ export default function PermissionCheckboxes({
 }) {
     const handleChange = (permission, checked) => {
         if (checked) {
-            onChange([...value, permission]);
+            onChange([...new Set([...value, permission])]);
         } else {
             onChange(value.filter((item) => item !== permission));
         }
     };
 
     return (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            {PERMISSION_GROUPS.map((group) => (
-                <div key={group.title}>
-                    <h3 className="mb-3 text-sm font-semibold">
-                        {group.title}
-                    </h3>
+        <div className="space-y-4">
+            {PERMISSION_GROUPS.map((group) => {
+                const actions = getGroupActions(group);
+                const gridStyle = {
+                    gridTemplateColumns: `minmax(0,1fr) repeat(${actions.length}, 70px)`,
+                };
 
-                    <div className="grid grid-cols-2 gap-3 rounded-md border p-4">
-                        {group.permissions.map((permission) => (
-                            <label
-                                key={permission.value}
-                                className="flex cursor-pointer items-center gap-2"
+                return (
+                    <div key={group.title}>
+                        <h3 className="mb-3 text-sm font-semibold">
+                            {group.title}
+                        </h3>
+
+                        <div className="w-full overflow-hidden rounded-md border">
+                            {/* Header */}
+                            <div
+                                className="grid items-center border-b bg-gray-50 px-4 py-3"
+                                style={gridStyle}
                             >
-                                <Checkbox
-                                    checked={value.includes(permission.value)}
-                                    onCheckedChange={(checked) =>
-                                        handleChange(
-                                            permission.value,
-                                            checked
-                                        )
-                                    }
-                                />
-
-                                <span className="text-sm">
-                                    {permission.label}
+                                <span className="text-sm font-medium">
+                                    Permission
                                 </span>
-                            </label>
-                        ))}
+
+                                {actions.map((action) => (
+                                    <span
+                                        key={action}
+                                        className="text-center text-sm font-medium capitalize"
+                                    >
+                                        {action}
+                                    </span>
+                                ))}
+                            </div>
+
+                            {/* Rows */}
+                            {group.resources.map((resource) => (
+                                <div
+                                    key={resource.key}
+                                    className="grid items-center border-b px-4 py-3 last:border-b-0"
+                                    style={gridStyle}
+                                >
+                                    <span className="min-w-0 text-sm">
+                                        {resource.label}
+                                    </span>
+
+                                    {actions.map((action) => {
+                                        const permission =
+                                            resource.permissions[action];
+
+                                        return (
+                                            <div
+                                                key={action}
+                                                className="flex justify-center"
+                                            >
+                                                {permission && (
+                                                    <Checkbox
+                                                        checked={value.includes(permission)}
+                                                        onCheckedChange={(checked) =>
+                                                            handleChange(
+                                                                permission,
+                                                                checked === true
+                                                            )
+                                                        }
+                                                    />
+                                                )}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            ))}
+                        </div>
                     </div>
-                </div>
-            ))}
+                );
+            })}
         </div>
     );
 }

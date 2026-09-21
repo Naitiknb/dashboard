@@ -50,24 +50,30 @@
 
 :root {
   --background: #eef3fd;
-  --foreground: #0b192c;            /* Secondary (navy) */
+  --foreground: #0b192c;
+  /* Secondary (navy) */
   --card: #ffffff;
   --card-foreground: #0b192c;
   --popover: #ffffff;
   --popover-foreground: #0b192c;
 
-  --primary: #0337a9;               /* Primary */
+  --primary: #0337a9;
+  /* Primary */
   --primary-foreground: #ffffff;
-  --secondary: #e0e9fb;             /* light blue, like the "Secondary" button */
+  --secondary: #e0e9fb;
+  /* light blue, like the "Secondary" button */
   --secondary-foreground: #0b192c;
-  --tertiary: #0ea5e9;              /* Tertiary */
+  --tertiary: #0ea5e9;
+  /* Tertiary */
   --tertiary-foreground: #ffffff;
 
   --muted: #e8eef9;
-  --muted-foreground: #64748b;      /* Neutral */
+  --muted-foreground: #64748b;
+  /* Neutral */
   --accent: #e0f2fe;
   --accent-foreground: #0b192c;
-  --destructive: #b91c1c;           /* red delete button */
+  --destructive: #b91c1c;
+  /* red delete button */
 
   --border: #d3ddf0;
   --input: #d3ddf0;
@@ -136,10 +142,19 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+
   html {
     @apply font-sans;
   }
+}
+
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
 }

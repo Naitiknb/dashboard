@@ -78,12 +78,6 @@ export default function RoleForm({ role }) {
                     required
                 />
 
-                <FormInput
-                    name="description"
-                    label="Description"
-                    placeholder="Enter role description"
-                />
-
             </div>
 
             <div className="mt-6">
