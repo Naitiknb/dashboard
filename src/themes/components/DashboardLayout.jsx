@@ -12,10 +12,11 @@ export default function DashboardShell({ children, user }) {
 
     return (
         <RBACProvider user={user}>
-            <div className="flex h-screen overflow-hidden bg-background text-foreground">
+            <div className="flex h-dvh overflow-hidden bg-background text-foreground">
                 <Sidebar
                     isOpen={isSidebarOpen}
                     user={user}
+                    onClose={() => setIsSidebarOpen(false)}
                 />
 
                 <div className="flex min-w-0 min-h-0 flex-1 flex-col overflow-hidden">
