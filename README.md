@@ -30,7 +30,7 @@ cd dashboard
 The project uses a dedicated development Docker configuration.
 
 ```bash
-docker compose -f docker-compose.dev.yml up --build
+docker compose -f docker-compose.dev.yaml up --build
 ```
 
 The application will be available at:
