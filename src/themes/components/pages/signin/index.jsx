@@ -16,39 +16,40 @@ export default function Login() {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
-    async function handleSubmit(event) {
-        event.preventDefault();
+    const handleSubmit = async (event) => {
+    event.preventDefault();
 
-        setError("");
-        setLoading(true);
+    setError("");
+    setLoading(true);
 
-        try {
-            const response = await fetch("/api/auth/signin", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    email,
-                    password,
-                }),
-            });
+    try {
+        const response = await fetch("/api/auth/signin", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                email,
+                password,
+            }),
+        });
 
-            const data = await response.json();
+        const result = await response.json().catch(() => null);
 
-            if (!response.ok) {
-                setError(data.message);
-                return;
-            }
-            router.push("/dashboard");
-            router.refresh();
-        } catch (error) {
-            console.error("Login error:", error);
-            setError("Unable to connect to the server.");
-        } finally {
-            setLoading(false);
+        if (!response.ok) {
+            setError(result?.message ?? "Login failed.");
+            return;
         }
+
+        router.push("/dashboard");
+        router.refresh();
+    } catch (error) {
+        console.error("Login error:", error);
+        setError("Something went wrong. Please try again.");
+    } finally {
+        setLoading(false);
     }
+};
 
     return (
         <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">

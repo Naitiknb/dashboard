@@ -48,7 +48,7 @@ export default function Sidebar({ isOpen }) {
 
             toast.success("Logged out successfully.");
 
-            router.push("/signin");
+            router.replace("/signin");
             router.refresh();
         } catch (error) {
             console.error("Logout error:", error);
@@ -81,20 +81,17 @@ export default function Sidebar({ isOpen }) {
                             key={item.key}
                             variant="ghost"
                             asChild
-                            className={`h-9 w-full gap-2 text-sm font-medium ${
-                                isOpen ? "justify-start px-3" : "justify-center px-0"
-                            } ${
-                                isActive
+                            className={`h-9 w-full gap-2 text-sm font-medium ${isOpen ? "justify-start px-3" : "justify-center px-0"
+                                } ${isActive
                                     ? "bg-primary text-white hover:bg-primary hover:text-white"
                                     : "text-gray-300 hover:bg-white/10 hover:text-white"
-                            }`}
+                                }`}
                         >
                             <Link
                                 href={item.href}
                                 title={item.label}
-                                className={`flex w-full items-center gap-2 whitespace-nowrap text-inherit no-underline ${
-                                    isOpen ? "" : "justify-center"
-                                }`}
+                                className={`flex w-full items-center gap-2 whitespace-nowrap text-inherit no-underline ${isOpen ? "" : "justify-center"
+                                    }`}
                             >
                                 <Icon className="h-4 w-4 shrink-0" />
                                 {isOpen && item.label}
