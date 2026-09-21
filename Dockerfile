@@ -10,6 +10,6 @@ COPY . .
 
 RUN npm run build
 
-EXPOSE 5000
+EXPOSE 10000
 
-CMD ["npm", "start", "--", "-p", "5000", "-H", "0.0.0.0"]
+CMD ["sh", "-c", "npm start -- -p $PORT -H 0.0.0.0"]
