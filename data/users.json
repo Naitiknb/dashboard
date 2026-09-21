@@ -8,14 +8,6 @@
     "description": "Default admin user"
   },
   {
-    "name": "Suyash",
-    "email": "suyash@gmail.com",
-    "password": "1234",
-    "roleId": 2,
-    "id": "3",
-    "createdAt": "2026-09-21T13:32:31.581Z"
-  },
-  {
     "name": "NB",
     "email": "nb@gmail.com",
     "password": "1234",
