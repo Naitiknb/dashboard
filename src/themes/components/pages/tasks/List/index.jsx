@@ -30,6 +30,7 @@ export default function tasks({ tasks }) {
     <DataTable
       columns={columns}
       data={tasks}
+      permissionKey="tasks"
       createPageLink="/tasks/create"
       editHref={(row) => `/tasks/${row.id}/edit`}
       deleteUrl="/api/tasks"

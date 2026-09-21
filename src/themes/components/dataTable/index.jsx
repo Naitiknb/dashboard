@@ -15,6 +15,7 @@ import {
 import { Button } from "../../../components/ui/button";
 import { Plus, Pencil, Trash2, Eye, Search } from "lucide-react";
 import { Input } from "../../../components/ui/input";
+import { useRBAC } from "@/context/RBACContext";
 
 export function ActionButton({
   icon: Icon,
@@ -83,15 +84,36 @@ export default function DataTable({
   data = EMPTY,
   createPageLink,
   toolbar,
+  permissionKey, // e.g. "wells", "tasks", "users", "roles"
 
   // Row actions
   renderActions,
   editHref,
+  viewHref,
   deleteUrl,
-  onDelete, 
+  onDelete,
   actionsBefore,
   actionsAfter,
 }) {
+  const { hasPermission } = useRBAC();
+
+  // no permissionKey = no restriction (old pages keep working)
+  const allow = (action) =>
+    !permissionKey || hasPermission(`${permissionKey}.${action}`);
+
+  const canCreate = allow("create");
+  const canEdit = allow("edit");
+  const canView = allow("view");
+  const canDelete = allow("delete");
+
+  const showEdit = Boolean(editHref) && canEdit;
+  const showView = Boolean(viewHref) && canView;
+  const showActions =
+    Boolean(renderActions || actionsBefore || actionsAfter) ||
+    showEdit ||
+    showView ||
+    canDelete;
+
   const [rows, setRows] = useState(data);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -103,7 +125,6 @@ export default function DataTable({
 
   const itemsPerPage = 20;
 
-  // search across every visible column
   const filteredRows = useMemo(() => {
     const q = search.trim().toLowerCase();
     if (!q) return rows;
@@ -124,6 +145,7 @@ export default function DataTable({
   };
 
   const deleteRow = async (row) => {
+    if (!canDelete) return;
     if (!window.confirm("Are you sure you want to delete this item?")) return;
 
     try {
@@ -131,7 +153,7 @@ export default function DataTable({
 
       if (onDelete) {
         const result = await onDelete(row);
-        if (result === false) return; // page refused, keep the row
+        if (result === false) return;
       } else if (deleteUrl) {
         const res = await fetch(`${deleteUrl}/${row.id}`, { method: "DELETE" });
         if (!res.ok) throw new Error("Delete failed");
@@ -146,10 +168,17 @@ export default function DataTable({
     }
   };
 
-  const actionHelpers = { deleteRow, removeRow, deletingId };
+  // custom renderActions can use canEdit / canView / canDelete too
+  const actionHelpers = {
+    deleteRow,
+    removeRow,
+    deletingId,
+    canEdit,
+    canView,
+    canDelete,
+  };
 
   return (
-    // adjust 6rem to your header + page padding
     <div className="flex h-[calc(100vh-3rem)] flex-col">
       {/* Toolbar */}
       <div className="my-2 flex shrink-0 items-center justify-end gap-5">
@@ -169,7 +198,7 @@ export default function DataTable({
 
         {toolbar}
 
-        {createPageLink ? (
+        {createPageLink && canCreate ? (
           <Button
             asChild
             size="sm"
@@ -185,7 +214,6 @@ export default function DataTable({
 
       {/* Card */}
       <div className="flex min-h-0 w-full flex-1 flex-col overflow-hidden rounded border bg-card shadow">
-        {/* Only this part scrolls */}
         <div className="flex-1 overflow-auto">
           <Table>
             <TableHeader className="sticky top-0 z-10 bg-blue-50">
@@ -198,9 +226,11 @@ export default function DataTable({
                     {column.label}
                   </TableHead>
                 ))}
-                <TableHead className="p-2 text-right text-xs font-bold text-gray-600">
-                  Actions
-                </TableHead>
+                {showActions && (
+                  <TableHead className="p-2 text-right text-xs font-bold text-gray-600">
+                    Actions
+                  </TableHead>
+                )}
               </TableRow>
             </TableHeader>
 
@@ -217,40 +247,54 @@ export default function DataTable({
                       </TableCell>
                     ))}
 
-                    <TableCell className="p-1">
-                      <div className="flex items-center justify-end">
-                        {renderActions ? (
-                          renderActions(row, actionHelpers)
-                        ) : (
-                          <>
-                            {actionsBefore?.(row)}
+                    {showActions && (
+                      <TableCell className="p-1">
+                        <div className="flex items-center justify-end">
+                          {renderActions ? (
+                            renderActions(row, actionHelpers)
+                          ) : (
+                            <>
+                              {actionsBefore?.(row)}
 
-                            {editHref ? (
-                              <EditAction
-                                href={
-                                  typeof editHref === "function"
-                                    ? editHref(row)
-                                    : `${editHref}/${row.id}`
-                                }
-                              />
-                            ) : null}
+                              {showView ? (
+                                <ViewAction
+                                  href={
+                                    typeof viewHref === "function"
+                                      ? viewHref(row)
+                                      : `${viewHref}/${row.id}`
+                                  }
+                                />
+                              ) : null}
 
-                            <DeleteAction
-                              disabled={deletingId === row.id}
-                              onClick={() => deleteRow(row)}
-                            />
+                              {showEdit ? (
+                                <EditAction
+                                  href={
+                                    typeof editHref === "function"
+                                      ? editHref(row)
+                                      : `${editHref}/${row.id}`
+                                  }
+                                />
+                              ) : null}
 
-                            {actionsAfter?.(row)}
-                          </>
-                        )}
-                      </div>
-                    </TableCell>
+                              {canDelete ? (
+                                <DeleteAction
+                                  disabled={deletingId === row.id}
+                                  onClick={() => deleteRow(row)}
+                                />
+                              ) : null}
+
+                              {actionsAfter?.(row)}
+                            </>
+                          )}
+                        </div>
+                      </TableCell>
+                    )}
                   </TableRow>
                 ))
               ) : (
                 <TableRow className="border-b">
                   <TableCell
-                    colSpan={columns.length + 1}
+                    colSpan={columns.length + (showActions ? 1 : 0)}
                     className="h-24 text-center text-muted-foreground"
                   >
                     {search ? `No results for "${search}"` : "No data found"}
@@ -261,7 +305,7 @@ export default function DataTable({
           </Table>
         </div>
 
-        {/* Pagination pinned to the bottom */}
+        {/* Pagination */}
         <div className="shrink-0 border-t bg-card">
           <div className="flex items-center justify-between p-2">
             <p className="text-sm text-muted-foreground">

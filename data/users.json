@@ -13,8 +13,16 @@
     "email": "naitikbohra50@gmail.com",
     "password": "1234",
     "role": "admin",
-    "description": "",
-    "id": "15070a4e-d80a-480a-96a0-e64310a17906",
-    "createdAt": "2026-09-20T16:09:03.117Z"
+    "id": "2",
+    "createdAt": "2026-09-21T10:30:32.606Z",
+    "roleId": 1
+  },
+  {
+    "name": "Suyash",
+    "email": "suyash@gmail.com",
+    "password": "1234",
+    "roleId": 2,
+    "id": "3",
+    "createdAt": "2026-09-21T13:32:31.581Z"
   }
 ]

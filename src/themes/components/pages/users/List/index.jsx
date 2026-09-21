@@ -13,6 +13,7 @@ export default function UserList({ users }) {
     <DataTable
       columns={columns}
       data={users}
+      permissionKey="users"
       createPageLink="/users/create"
       editHref={(row) => `/users/${row.id}/edit`}
       deleteUrl="/api/users"

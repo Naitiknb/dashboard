@@ -50,9 +50,14 @@ export async function createtask(data) {
     };
   }
 
+  const nextId =
+    tasks.length > 0
+      ? Math.max(...tasks.map((task) => Number(task.id))) + 1
+      : 1;
+
   const task = {
     ...data,
-    id: crypto.randomUUID(),
+    id: String(nextId),
     createdAt: new Date().toISOString(),
   };
 

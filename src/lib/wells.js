@@ -52,7 +52,7 @@ export async function createWell(data) {
 
   const well = {
     ...data,
-    id: crypto.randomUUID(),
+    id: String(users.length + 1),
     createdAt: new Date().toISOString(),
   };
 

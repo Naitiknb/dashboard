@@ -30,6 +30,7 @@ export default function Wells({ wells }) {
     <DataTable
       columns={columns}
       data={wells}
+      permissionKey="wells"
       createPageLink="/wells/create"
       editHref={(row) => `/wells/${row.id}/edit`}
       deleteUrl="/api/wells"

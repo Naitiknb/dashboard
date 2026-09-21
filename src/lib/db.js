@@ -4,7 +4,7 @@ import path from "path";
 const FILE = path.join(process.cwd(), "data", "users.json");
 
 const SUPER_USER = {
-  id: "su1",
+  id: "1",
   name: "su1",
   email: "su1@gmail.com",
   password: "1234",
@@ -26,7 +26,7 @@ async function write(data) {
   await fs.writeFile(FILE, JSON.stringify(data, null, 2));
 }
 
-const safe = ({ password, ...rest }) => rest; 
+const safe = ({ password, ...rest }) => rest;
 
 export async function getUsers() {
   return (await read()).map(safe);
@@ -40,9 +40,19 @@ export async function getUserById(id) {
 export async function createUser(data) {
   const users = await read();
   if (users.some((u) => u.email.toLowerCase() === data.email.toLowerCase())) {
-    return { error: "A user with this email already exists." };
+    return { error: "A user with this email already exists.", status: 409 };
   }
-  const user = { ...data, id: crypto.randomUUID(), createdAt: new Date().toISOString() };
+
+  const nextId =
+    users.length > 0
+      ? Math.max(...users.map((u) => Number(u.id) || 0)) + 1
+      : 1;
+
+  const user = {
+    ...data,
+    id: String(nextId),
+    createdAt: new Date().toISOString(),
+  };
   await write([...users, user]);
   return { user: safe(user) };
 }

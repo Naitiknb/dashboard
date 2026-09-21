@@ -1,0 +1,56 @@
+[
+  {
+    "name": "Admin",
+    "description": "active",
+    "status": "active",
+    "permissions": [
+      "dashboard.view",
+      "dashboard.widgets.production",
+      "dashboard.widgets.performance",
+      "dashboard.widgets.underPerforming",
+      "dashboard.widgets.target",
+      "dashboard.widgets.topWells",
+      "dashboard.widgets.fieldPerformance",
+      "wells.view",
+      "wells.edit",
+      "wells.create",
+      "wells.delete",
+      "tasks.edit",
+      "tasks.view",
+      "tasks.create",
+      "tasks.delete",
+      "users.view",
+      "users.edit",
+      "users.create",
+      "users.delete",
+      "roles.view",
+      "roles.edit",
+      "roles.create",
+      "roles.delete"
+    ],
+    "id": "1",
+    "createdAt": "2026-09-21T12:00:22.278Z"
+  },
+  {
+    "name": "Eng",
+    "description": "",
+    "status": "active",
+    "permissions": [
+      "dashboard.view",
+      "dashboard.widgets.production",
+      "dashboard.widgets.performance",
+      "dashboard.widgets.underPerforming",
+      "dashboard.widgets.target",
+      "dashboard.widgets.topWells",
+      "dashboard.widgets.fieldPerformance",
+      "wells.view",
+      "wells.edit",
+      "wells.delete",
+      "tasks.view",
+      "tasks.edit",
+      "tasks.delete"
+    ],
+    "id": "2",
+    "createdAt": "2026-09-21T13:31:31.263Z"
+  }
+]

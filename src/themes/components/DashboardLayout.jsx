@@ -4,35 +4,39 @@ import { useState } from "react";
 
 import Sidebar from "./sidebar";
 import Header from "./header";
+
 import { Toaster } from "sonner";
 
-export default function DashboardLayout({ children }) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+import { RBACProvider } from "@/context/RBACContext";
 
-  return (
-    <div className="flex h-screen overflow-hidden bg-background text-foreground">
-      
-      <Sidebar isOpen={isSidebarOpen} />
+export default function DashboardShell({ children, user }) {
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-      <div className="flex min-w-0 min-h-0 flex-1 flex-col overflow-hidden">
 
-        <Header
-          isSidebarOpen={isSidebarOpen}
-          setIsSidebarOpen={setIsSidebarOpen}
-        />
+    
 
-        <main className="min-h-0 flex-1 overflow-y-auto">
-          {children}
-        </main>
+    return (
+        <RBACProvider user={user}>
+            <div className="flex h-screen overflow-hidden bg-background text-foreground">
+                <Sidebar isOpen={isSidebarOpen} user={user} />
 
-        <Toaster
-          position="top-right"
-          richColors
-          closeButton
-        />
+                <div className="flex min-w-0 min-h-0 flex-1 flex-col overflow-hidden">
+                    <Header
+                        isSidebarOpen={isSidebarOpen}
+                        setIsSidebarOpen={setIsSidebarOpen}
+                    />
 
-      </div>
+                    <main className="min-h-0 flex-1 overflow-y-auto">
+                        {children}
+                    </main>
 
-    </div>
-  );
+                    <Toaster
+                        position="top-right"
+                        richColors
+                        closeButton
+                    />
+                </div>
+            </div>
+        </RBACProvider>
+    );
 }

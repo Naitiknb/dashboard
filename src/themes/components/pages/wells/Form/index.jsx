@@ -59,6 +59,7 @@ export default function WellsForm({ well }) {
             data={{ id: well?.id ?? 0 }}
             form={form}
             onSubmitAction={onSubmit}
+            
             error={error}
             backPageLink="/wells"
             breadcrumbItems={[

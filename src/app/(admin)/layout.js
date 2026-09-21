@@ -1,25 +1,12 @@
-import { Outfit } from "next/font/google";
-import "@/app/globals.css";
-import DashboardLayout from "@/themes/components/DashboardLayout";
+import DashboardShell from "@/themes/components/DashboardLayout";
+import { getCurrentUser } from "@/lib/auth";
 
-const outfit = Outfit({
-    variable: "--font-outfit",
-    subsets: ["latin"],
-    display: "swap",
-    fallback: ["system-ui", "Arial", "sans-serif"],
-});
+export default async function AdminLayout({ children }) {
+    const user = await getCurrentUser();
 
-export const metadata = {
-    title: "My Dashboard",
-    description: "Dashboard application",
-};
-
-export default function RootLayout({ children }) {
     return (
-
-        <DashboardLayout>
+        <DashboardShell user={user}>
             {children}
-        </DashboardLayout>
-
+        </DashboardShell>
     );
 }
